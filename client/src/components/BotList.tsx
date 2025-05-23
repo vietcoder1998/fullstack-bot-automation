@@ -32,11 +32,28 @@ const BotList: React.FC = () => {
     return (
         <div>
             <h1>Bot List</h1>
-            <ul>
-                {bots.map((bot) => (
-                    <li key={bot.id}>{bot.name}</li>
-                ))}
-            </ul>
+            {bots.length === 0 ? (
+                <div style={{ marginTop: 20, color: '#888' }}>No bots found.</div>
+            ) : (
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 20 }}>
+                    <thead>
+                        <tr>
+                            <th style={{ border: '1px solid #ddd', padding: 8 }}>Name</th>
+                            <th style={{ border: '1px solid #ddd', padding: 8 }}>Token</th>
+                            <th style={{ border: '1px solid #ddd', padding: 8 }}>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bots.map((bot) => (
+                            <tr key={bot._id}>
+                                <td style={{ border: '1px solid #ddd', padding: 8 }}>{bot.name}</td>
+                                <td style={{ border: '1px solid #ddd', padding: 8 }}>{bot.token}</td>
+                                <td style={{ border: '1px solid #ddd', padding: 8 }}>{new Date(bot.createdAt).toLocaleString()}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };

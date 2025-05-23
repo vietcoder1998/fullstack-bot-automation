@@ -59,3 +59,17 @@ jobs:
         run: |
           cd server
           npm test || echo "No tests found."
+
+      - name: Deploy to DigitalOcean Droplet via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          port: ${{ secrets.DROPLET_PORT }}
+          script: |
+            cd /path/to/your/app
+            git pull origin main
+            cd client && npm install && npm run build
+            cd ../server && npm install && npm run build
+            pm2 restart all || pm2 start dist/index.js --name fullstack-bot-app
