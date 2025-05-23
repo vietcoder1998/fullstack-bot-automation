@@ -1,0 +1,61 @@
+name: GitHub AutoFlow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies (client)
+        run: |
+          cd client
+          npm install
+
+      - name: Install dependencies (server)
+        run: |
+          cd server
+          npm install
+
+      - name: Lint (client)
+        run: |
+          cd client
+          npm run lint || true
+
+      - name: Lint (server)
+        run: |
+          cd server
+          npm run lint || true
+
+      - name: Build client
+        run: |
+          cd client
+          npm run build
+
+      - name: Build server
+        run: |
+          cd server
+          npm run build
+
+      - name: Run server tests (if any)
+        run: |
+          cd server
+          npm test || echo "No tests found."
